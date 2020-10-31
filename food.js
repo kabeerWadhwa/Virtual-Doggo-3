@@ -4,7 +4,20 @@ class food{
          this.lastFed
          this.image = loadImage("images/Milk.png")
     }
-    Display(){
+    display(){
+        background(46,139,89)
+        //textSize(25);
+        //fill("black")
+        //text("Use the up arrow key to feed Tango", 70, 450)
+        fill(255,255,254)
+        textSize(15);
+        if(lastFed>=12){
+        text("Last Feed : "+ lastfed%12 + "PM", 350,30)
+        }else if(lastFed==0){
+        text("Last Feed : 12 AM", 350,30);
+        }else{
+        text("Last Feed :"+ lastFed + "AM", 350,30)
+        }
         var x=80, y=100;
 
         imageMode(CENTER);
@@ -24,9 +37,9 @@ class food{
             this.foodStock = foodStock
         }
         getFoodStock(){
-            this.foodStock
+            return this.foodStock
         }
-        feedDog(){
+        /*feedDog(){
             dog.addImage(happyDog)
 
             foodObj.updateFoodStock(foodObj.getFoodStock()-1);
@@ -40,6 +53,16 @@ class food{
             database.ref('/').update({
                 Food:foodS
             })
+        }*/
+
+        deductFood(){
+            if(this.foodStock>0){
+                this.foodStock = this.foodStock - 1;
+            }
+        }
+
+        getFedTime(lastFed){
+            this.lastFed = lastFed
         }
 
     bedroom(){

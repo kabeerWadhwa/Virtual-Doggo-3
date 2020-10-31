@@ -22,6 +22,11 @@ function setup() {
   dog.scale = 0.5;
   foodStock = database.ref('Food')
   foodStock.on("value", readStock)
+  foodObj = new food();
+  fedTime = database.ref('feedTime')
+  fedTime.on("value", function(data){
+    lastFed = data.val()
+  })
   /*Food = createSprite(100,100,20,20)
   Food.addImage(
   Food.scale = 0.2;*/
@@ -45,7 +50,6 @@ function draw() {
 background(46,139,87)
 /*fedTime=database.ref('FeedTime')
 fedTime.on("value",function(data){
-
 })*/
 
 currentTime=hour();
@@ -60,32 +64,30 @@ currentTime=hour();
     foodObj.washroom();
   }else{
     update("Hungry")
-    foodObj.Display();
+    foodObj.display();
   }
+if(gameState!="Hungry"){
+  feed.hide()
+  addFood.hide()
+  dog.remove()
+}else{
+  feed.show()
+  addFood.show()
+  dog.addImage(Dog)
+}
 
   drawSprites();
   //add styles here
-  textSize(25);
-  fill("black")
-  text("Use the up arrow key to feed Tango", 70, 450)
-  fill(255,255,254)
-  textSize(15);
-  if(lastFed>=12){
-    text("Last Feed : "+ lastfed%12 + "PM", 350,30)
-  }else if(lastFed==0){
-    text("Last Feed : 12 AM", 350,30);
-  }else{
-    text("Last Feed :"+ lastFed + "AM", 350,30)
-  }
 
 }
 //Function to read values from DB
 function readStock(data){
   foodS=data.val();
+foodObj.updateFoodStock(foodS)
 }
 
 //Function to write values in DB
-function writeStock(x){
+/*function writeStock(x){
 
   if(x<= 0){
     x= 0;
@@ -95,10 +97,25 @@ function writeStock(x){
     database.ref('/').update({
       Food:x
     })
+}*/
+
+function addFoods(){
+  foodS++
+  database.ref('/').update({
+    Food:foodS
+  })
 }
 
 function update(state){
   database.ref('/').update({
     gameState:state
   });
+}
+
+function feedDog(){
+  dog.addImage(happyDog)
+  foodObj.updateFoodStock(foodObj.getFoodStock()-1)
+  database.ref('/').update({
+    Food:foodObj.getFoodStock(),feedTime:hour(),gameState:"Hungry"
+  })
 }
